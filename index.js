@@ -1,3 +1,9 @@
+const debug = require('debug');
+const logger = {
+    info : debug('hdwallet:info'),
+    warn : debug('hdwallet:warn'),
+    error : debug('hdwallet:error')   
+};
 var bip39 = require("bip39");
 var hdkey = require('ethereumjs-wallet/hdkey');
 var ProviderEngine = require("web3-provider-engine");
@@ -60,6 +66,9 @@ function HDWalletProvider(mnemonic, provider_url, address_index=0, num_addresses
   this.engine.addProvider(new FiltersSubprovider());
   this.engine.addProvider(new Web3Subprovider(new Web3.providers.HttpProvider(provider_url)));
   this.engine.start(); // Required by the provider engine.
+  this.engine.on('error', function (err) {
+    logger.error('web3 provider engine error', err);
+  });
 };
 
 HDWalletProvider.prototype.sendAsync = function() {
@@ -72,7 +81,7 @@ HDWalletProvider.prototype.send = function() {
 
 // returns the address of the given address_index, first checking the cache
 HDWalletProvider.prototype.getAddress = function(idx) {
-  console.log('getting addresses', this.addresses[0], idx)
+  logger.info('getting addresses', this.addresses[0], idx)
   if (!idx) { return this.addresses[0]; }
   else { return this.addresses[idx]; }
 }
