@@ -6,7 +6,7 @@ This is forked from truffle-hdwallet-provider.
 ## Install
 
 ```
-$ npm install truffle-hdwallet-provider
+$ npm install web3-hdwallet-provider
 ```
 
 ## General Usage
@@ -36,7 +36,7 @@ You can easily use this within a Truffle configuration. For instance:
 
 truffle.js
 ```javascript
-var HDWalletProvider = require("truffle-hdwallet-provider");
+var HDWalletProvider = require("web3-hdwallet-provider");
 
 var mnemonic = "opinion destroy betray ...";
 
