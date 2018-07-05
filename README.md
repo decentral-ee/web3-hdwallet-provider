@@ -1,7 +1,10 @@
 # web3-hdwallet-provider
 HD Wallet-enabled Web3 provider. Use it to sign transactions for addresses derived from a 12-word mnemonic.
 
-This is forked from truffle-hdwallet-provider.
+This is forked from truffle-hdwallet-provider, with the differences:
+
+- web3 as external dependency, user injects its own provider
+- start/stop functions
 
 ## Install
 
@@ -14,15 +17,18 @@ $ npm install web3-hdwallet-provider
 You can use this provider wherever a Web3 provider is needed, not just in Truffle. For Truffle-specific usage, see next section.
 
 ```javascript
-var HDWalletProvider = require("truffle-hdwallet-provider");
-var mnemonic = "opinion destroy betray ..."; // 12 word mnemonic
-var provider = new HDWalletProvider(mnemonic, "http://localhost:8545");
+const Web3 = require("web3");
+const Web3HDWalletProvider = require("web3-hdwallet-provider");
+const mnemonic = "opinion destroy betray ..."; // 12 word mnemonic
 
+var httpProvider = new Web3.providers.HttpProvider('"http://localhost:8545');
+
+var provider = new Web3HDWalletProvider(httpProvider, mnemonic);
 // Or, alternatively pass in a zero-based address index.
-var provider = new HDWalletProvider(mnemonic, "http://localhost:8545", 5);
+var provider = new Web3HDWalletProvider(httpProvider, mnemonic, 5);
 ```
 
-By default, the `HDWalletProvider` will use the address of the first address that's generated from the mnemonic. If you pass in a specific index, it'll use that address instead. Currently, the `HDWalletProvider` manages only one address at a time, but it can be easily upgraded to manage (i.e., "unlock") multiple addresses.
+By default, the `Web3HDWalletProvider` will use the address of the first address that's generated from the mnemonic. If you pass in a specific index, it'll use that address instead. Currently, the `HDWalletProvider` manages only one address at a time, but it can be easily upgraded to manage (i.e., "unlock") multiple addresses.
 
 Parameters:
 
@@ -36,7 +42,8 @@ You can easily use this within a Truffle configuration. For instance:
 
 truffle.js
 ```javascript
-var HDWalletProvider = require("web3-hdwallet-provider");
+const Web3 = require("web3");
+const Web3HDWalletProvider = require("web3-hdwallet-provider");
 
 var mnemonic = "opinion destroy betray ...";
 
@@ -48,7 +55,9 @@ module.exports = {
       network_id: "*" // Match any network id
     },
     ropsten: {
-      provider: new HDWalletProvider(mnemonic, "https://ropsten.infura.io/"),
+      provider: new Web3HDWalletProvider(
+        new Web3.providers.HttpProvider("https://ropsten.infura.io/"),
+        mnemonic),
       network_id: 3
     }
   }

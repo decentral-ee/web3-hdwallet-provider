@@ -13,11 +13,10 @@ const NonceSubprovider = require('web3-provider-engine/subproviders/nonce-tracke
 const VmSubprovider = require('web3-provider-engine/subproviders/vm.js');
 const HookedWalletSubprovider = require("web3-provider-engine/subproviders/hooked-wallet.js");
 const ProviderSubprovider = require("web3-provider-engine/subproviders/provider.js");
-const Web3 = require("web3");
 const Transaction = require("ethereumjs-tx");
 const ethUtil = require("ethereumjs-util");
 
-function HDWalletProvider(mnemonic, provider_url, address_index = 0, num_addresses = 1, provider_options = {}) {
+function Web3HDWalletProvider(provider, mnemonic, address_index = 0, num_addresses = 1) {
     this.started = false;
     this.mnemonic = mnemonic;
     this.hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
@@ -81,21 +80,13 @@ function HDWalletProvider(mnemonic, provider_url, address_index = 0, num_address
             }
         })
     );
-    {
-        let httpProvider = new Web3.providers.HttpProvider(
-            provider_url,
-            provider_options.timeout,
-            provider_options.user,
-            provider_options.password,
-            provider_options.headers);
-        this.engine.addProvider(new ProviderSubprovider(httpProvider));
-    }
+    this.engine.addProvider(new ProviderSubprovider(provider));
     this.engine.on("error", function(err) {
         logger.error("web3 provider engine error", err, err.stack);
     });
 }
 
-HDWalletProvider.prototype.start = function() {
+Web3HDWalletProvider.prototype.start = function() {
     if (!this.started) {
         this.engine.start();
         this.started = true;
@@ -105,7 +96,7 @@ HDWalletProvider.prototype.start = function() {
     }
 }
 
-HDWalletProvider.prototype.stop = function() {
+Web3HDWalletProvider.prototype.stop = function() {
     //console.log("!!! start", new Error().stack);
     if (this.started) {
         this.engine.stop();
@@ -116,7 +107,7 @@ HDWalletProvider.prototype.stop = function() {
     }
 }
 
-HDWalletProvider.prototype.sendAsync = function() {
+Web3HDWalletProvider.prototype.sendAsync = function() {
     // FIXME: auto start
     // It is a mess now, truffle does not have appropriate hooks for
     // start/stop the provider, hence we will do auto start for now
@@ -125,7 +116,7 @@ HDWalletProvider.prototype.sendAsync = function() {
     this.engine.sendAsync.apply(this.engine, arguments);
 };
 
-HDWalletProvider.prototype.send = function() {
+Web3HDWalletProvider.prototype.send = function() {
     // FIXME: auto start
     // see sendAsync comments
     if (!this.started) this.start(); 
@@ -134,7 +125,7 @@ HDWalletProvider.prototype.send = function() {
 };
 
 // returns the address of the given address_index, first checking the cache
-HDWalletProvider.prototype.getAddress = function(idx) {
+Web3HDWalletProvider.prototype.getAddress = function(idx) {
     if (!idx) {
         return this.addresses[0];
     } else {
@@ -143,8 +134,8 @@ HDWalletProvider.prototype.getAddress = function(idx) {
 };
 
 // returns the addresses cache
-HDWalletProvider.prototype.getAddresses = function() {
+Web3HDWalletProvider.prototype.getAddresses = function() {
     return this.addresses;
 };
 
-module.exports = HDWalletProvider;
+module.exports = Web3HDWalletProvider;
