@@ -86,14 +86,24 @@ function Web3HDWalletProvider(provider, mnemonic, address_index = 0, num_address
     });
 }
 
-Web3HDWalletProvider.prototype.start = function() {
-    if (!this.started) {
-        this.engine.start();
-        this.started = true;
-        logger.info("started");
-    } else {
-        logger.warn("already started");
-    }
+Web3HDWalletProvider.prototype.start = async function() {
+    return new Promise((resolve, reject) => {
+        if (!this.started) {
+            this.started = true;
+            this.engine.start(function (err) {
+                if (err) {
+                    reject(err);
+                    this.started = false;
+                } else {
+                    logger.info("started");
+                    resolve();
+                }
+            });
+        } else {
+            logger.warn("already started");
+            resolve();
+        }
+    });
 }
 
 Web3HDWalletProvider.prototype.stop = function() {
@@ -111,16 +121,22 @@ Web3HDWalletProvider.prototype.sendAsync = function() {
     // FIXME: auto start
     // It is a mess now, truffle does not have appropriate hooks for
     // start/stop the provider, hence we will do auto start for now
-    if (!this.started) this.start(); 
-    //if (!this.started) throw new Error("provider.sendAsync called, but provider not started");
-    this.engine.sendAsync.apply(this.engine, arguments);
+    if (!this.started) this.start();
+    /*if (!this.started) {
+        logger.warn('Web3HDWalletProvider.prototype.send', arguments);
+        throw new Error("provider.sendAsync called, but provider not started");
+    }*/
+    return this.engine.sendAsync.apply(this.engine, arguments);
 };
 
 Web3HDWalletProvider.prototype.send = function() {
     // FIXME: auto start
     // see sendAsync comments
-    if (!this.started) this.start(); 
-    //if (!this.started) throw new Error("provider.send not started, but provider not started");
+    if (!this.started) this.start();
+    /*if (!this.started) {
+        logger.warn('Web3HDWalletProvider.prototype.send', arguments);
+        throw new Error("provider.send not started, but provider not started");
+    }*/
     return this.engine.send.apply(this.engine, arguments);
 };
 
