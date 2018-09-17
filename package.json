@@ -29,7 +29,7 @@
         "ethereumjs-util": "^5.2.0",
         "ethereumjs-wallet": "^0.6.2",
         "web3-provider-engine": "^14.0.5",
-        "web3": "^0.20.6",
+        "web3": "^0.20.6"
     },
     "devDependencies": {
         "ganache-core": "^2.1.0",
