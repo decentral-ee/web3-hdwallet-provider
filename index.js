@@ -123,9 +123,11 @@ function HDWalletProvider(
   }
   this.engine.addProvider(hookedSubprovider);
 
-  !shareNonce
-    ? this.engine.addProvider(new NonceSubProvider())
-    : this.engine.addProvider(singletonNonceSubProvider);
+  if (!NonceSubProvider) {
+    !shareNonce
+      ? this.engine.addProvider(new NonceSubProvider())
+      : this.engine.addProvider(singletonNonceSubProvider);
+  }
 
   this.engine.addProvider(new FiltersSubprovider());
   if (typeof provider === "string") {
