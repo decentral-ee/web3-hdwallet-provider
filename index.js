@@ -28,6 +28,7 @@ function HDWalletProvider(
   // parse options
   let shareNonce = typeof options.share_nonce != 'undefined' ? options.share_nonce : true;
   let wallet_hdpath = typeof options.wallet_hdpath != 'undefined' ? options.wallet_hdpath : "m/44'/60'/0'/0/";
+  let noNonceTracking = options.no_nonce_tracking;
 
   if ((mnemonic && mnemonic.indexOf(" ") === -1) || Array.isArray(mnemonic)) {
     const privateKeys = Array.isArray(mnemonic) ? mnemonic : [mnemonic];
@@ -123,7 +124,7 @@ function HDWalletProvider(
   }
   this.engine.addProvider(hookedSubprovider);
 
-  if (!NonceSubProvider) {
+  if (!noNonceTracking) {
     !shareNonce
       ? this.engine.addProvider(new NonceSubProvider())
       : this.engine.addProvider(singletonNonceSubProvider);
