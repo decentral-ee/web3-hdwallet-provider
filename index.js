@@ -106,6 +106,9 @@ function HDWalletProvider(
         const sig = ethUtil.ecsign(msgHashBuff, pkey);
         const rpcSig = ethUtil.toRpcSig(sig.v, sig.r, sig.s);
         cb(null, rpcSig);
+      },
+      signPersonalMessage() {
+        this.signMessage(...arguments);     
       }
     }
   );
