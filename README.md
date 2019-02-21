@@ -23,9 +23,9 @@ const mnemonic = "opinion destroy betray ..."; // 12 word mnemonic
 
 var httpProvider = new Web3.providers.HttpProvider('"http://localhost:8545');
 
-var provider = new Web3HDWalletProvider(httpProvider, mnemonic);
+var provider = new Web3HDWalletProvider(mnemonic, httpProvider);
 // Or, alternatively pass in a zero-based address index.
-var provider = new Web3HDWalletProvider(httpProvider, mnemonic, 5);
+var provider = new Web3HDWalletProvider(mnemonic, httpProvider, 5);
 ```
 
 By default, the `Web3HDWalletProvider` will use the address of the first address that's generated from the mnemonic. If you pass in a specific index, it'll use that address instead. Currently, the `HDWalletProvider` manages only one address at a time, but it can be easily upgraded to manage (i.e., "unlock") multiple addresses.
