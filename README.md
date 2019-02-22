@@ -4,7 +4,12 @@ HD Wallet-enabled Web3 provider. Use it to sign transactions for addresses deriv
 This is forked from truffle-hdwallet-provider, with the differences:
 
 - web3 as external dependency, user injects its own provider
-- start/stop functions
+- main is `index.js` instead of `dist/index.js`
+- `options` as a parameter
+- additional option:
+    - `noNonceTracking`, disable all sorts of nonce tracker all together
+- hacks:
+    - bypass `signTypedData` handling in `hookedSubprovider` in order to make signTypedData work
 
 ## Install
 
@@ -56,9 +61,9 @@ module.exports = {
       network_id: "*" // Match any network id
     },
     ropsten: {
-      provider: new Web3HDWalletProvider(
-        new Web3.providers.HttpProvider("https://ropsten.infura.io/"),
-        mnemonic),
+      provider: () => new Web3HDWalletProvider(
+        mnemonic,
+        new Web3.providers.HttpProvider("https://ropsten.infura.io/")),
       network_id: 3
     }
   }
