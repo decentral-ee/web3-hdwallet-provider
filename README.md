@@ -1,3 +1,5 @@
+**!!!WARNING: truffle-hdwallet-provider has improved greatly since this package had to be introduced, consider to use the original one instead!!!**
+
 # web3-hdwallet-provider
 HD Wallet-enabled Web3 provider. Use it to sign transactions for addresses derived from a 12-word mnemonic.
 
