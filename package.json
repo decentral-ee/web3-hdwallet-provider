@@ -25,7 +25,7 @@
     "homepage": "https://github.com/decentral-ee/web3-hdwallet-provider#readme",
     "devDependencies": {
         "js-scrypt": "^0.2.0",
-        "mocha": "^5.1.1",
+        "mocha": "^10.2.0",
         "ganache-core": "^2.4.0"
     },
     "dependencies": {
